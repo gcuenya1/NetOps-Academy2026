@@ -1,0 +1,44 @@
+NETOPS ACADEMY - Capacitación en Redes, Soporte, NOC y Seguridad
+=================================================================
+
+CÓMO USARLA
+  1. Abrí "index.html" con doble clic (Chrome o Edge). No requiere instalación.
+  2. Seguí el "Plan de estudio" (7 días, 3-4 h por día) o hacé una unidad por día.
+  3. En cada unidad: Teoría -> English Corner -> Flashcards -> Quiz -> Lab práctico.
+  4. El progreso (XP, niveles, insignias) se guarda en el navegador.
+     Desde "Mi progreso" podés exportarlo/importarlo para cambiar de PC.
+
+CONTENIDO
+  Unidades:
+   01 Fundamentos de redes (OSI, TCP/IP, Ethernet, medios)
+   02 IPv4, Subnetting, VLSM, IPv6
+   03 Protocolos y servicios (TCP/UDP, ARP, ICMP, DHCP, DNS, NAT, HTTP)
+   04 CCNA I: Switching (IOS, VLAN, trunk, STP, EtherChannel, SSH)
+   05 CCNA II: Routing (estático, OSPF, inter-VLAN, ACL, NAT, HSRP)
+   06 Wireless y Telecom (Wi-Fi, RF/dBm, fibra, OTDR, GPON, MPLS, SD-WAN, 5G)
+   07 Linux para redes y NOC (comandos, permisos, systemd, logs, bash, cron)
+   08 Soporte técnico (metodología, Windows/PowerShell, AD/GPO, tickets, SLA)
+   09 Operaciones NOC (SNMP, monitoreo, syslog, ITIL, MTTR, disponibilidad)
+   10 Ciberseguridad (ataques, firewalls, IDS/IPS, VPN, cripto, NIST, IR)
+   11 Python para redes (ipaddress, socket, regex, requests, Netmiko, Jinja2)
+   12 Cloud y automatización (Docker, VPC, Ansible, Terraform, SDN, Git)
+   13 Hacking ético (marco legal, metodología, OSINT, Nmap, OWASP, informe)
+
+  Laboratorios interactivos:
+   - Subnetting Trainer (ejercicios aleatorios + calculadora)
+   - Port Rush (60 s de puertos y servicios)
+   - Terminal Linux simulada (15 misiones: diagnóstico, logs, servicio caído)
+   - Simulador Cisco IOS (11 misiones: VLAN, trunk, SVI, SSH, guardar)
+   - Simulador de turno NOC (5 incidentes con decisiones y SLA)
+   - Python Lab (8 desafíos; necesita Internet la primera vez para cargar Python)
+
+  English Lab: glosario de todas las unidades, drill de vocabulario, frases
+  para incidentes/soporte/pase de turno, false friends y 10 preguntas de
+  entrevista con respuestas modelo.
+
+  Examen final: 30 preguntas al azar. Con 80% o más se genera un certificado.
+
+ESTRUCTURA DE ARCHIVOS
+  index.html         -> abrir este
+  assets/            -> estilos, motor de la app, laboratorios, extras
+  units/             -> una unidad por archivo (fácil de ampliar o corregir)
