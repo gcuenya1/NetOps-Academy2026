@@ -91,6 +91,7 @@
     });
     html += '<h4>Laboratorios</h4>';
     Object.keys(TOOLS).forEach(k => { html += a('#/tool/' + k, TOOLS[k].icon + ' ' + TOOLS[k].title); });
+    if (window.SimKit) html += '<h4>Simulaciones</h4>' + a('#/sims', '🎬 Todas las simulaciones', '<span class="p">' + SimKit.count() + '/' + SimKit.list().length + '</span>');
     html += '<h4>Extras</h4>' + a('#/english', '🇬🇧 English Lab') + a('#/exam', '🎓 Examen final') + a('#/progress', '📊 Mi progreso');
     document.getElementById('side').innerHTML = html;
   }
@@ -103,7 +104,7 @@
     const done = UNITS.filter(u => unitProg(u).done).length;
     const next = UNITS.find(u => !unitProg(u).done) || UNITS[0];
     let h = '<div class="hero"><div class="num">NETOPS ACADEMY · v1.0</div><h1>Capacitación intensiva: Redes, Soporte, NOC y Seguridad</h1>' +
-      '<p>13 unidades + 6 laboratorios interactivos + English Lab. Diseñada para completarse en ~7 días a razón de 3–4 h por día. Cada unidad tiene teoría, <b>English Corner</b>, flashcards, quiz y laboratorio.</p>' +
+      '<p>13 unidades + 6 laboratorios interactivos + ' + (window.SimKit ? SimKit.list().length + ' simulaciones animadas + ' : '') + 'English Lab. Diseñada para completarse en ~7 días a razón de 3–4 h por día. Cada unidad tiene teoría, <b>English Corner</b>, flashcards, quiz y laboratorio.</p>' +
       '<div class="stats"><div class="stat"><b>' + S.xp + '</b><span>XP total</span></div><div class="stat"><b>' + L.cur[2] + ' ' + L.cur[1] + '</b><span>Nivel actual' + (L.next ? ' · faltan ' + (L.next[0] - S.xp) + ' XP' : '') + '</span></div>' +
       '<div class="stat"><b>' + done + '/' + UNITS.length + '</b><span>Unidades completas</span></div><div class="stat"><b>🔥 ' + S.streak + '</b><span>Racha de días</span></div></div>' +
       '<a class="btn" href="#/unit/' + next.id + '">▶ Continuar: ' + next.num + '. ' + next.short + '</a> <a class="btn sec" href="#/plan">Ver plan de 7 días</a></div>';
@@ -117,6 +118,7 @@
       const t = TOOLS[k];
       h += '<a class="card" href="#/tool/' + k + '"><span class="ico">' + t.icon + '</span><h3>' + t.title + '</h3><p>' + t.desc + '</p></a>';
     });
+    if (window.SimKit) h += '<a class="card" href="#/sims"><span class="ico">🎬</span><h3>Simulaciones animadas</h3><p>' + SimKit.list().length + ' simulaciones paso a paso: cómo aprende MACs un switch, ARP, DHCP, DNS, NAT, STP, OSPF, ACL, OTDR y más. También aparecen dentro de cada lección.</p></a>';
     h += '<a class="card" href="#/english"><span class="ico">🇬🇧</span><h3>English Lab</h3><p>Vocabulario técnico de todas las unidades, frases para incidentes, soporte telefónico y preguntas de entrevista.</p></a>';
     h += '<a class="card" href="#/exam"><span class="ico">🎓</span><h3>Examen final</h3><p>30 preguntas al azar de todas las unidades. Aprobás con 80% y te llevás el certificado.</p></a></div>';
     h += '<h2>Insignias</h2><div>' + badges() + '</div>';
@@ -132,6 +134,7 @@
       ['🛰️', 'Guardia del NOC', (S.tools.nocDone || 0) >= 3],
       ['⚡', 'Port Rush 15+', (S.tools.portsBest || 0) >= 15],
       ['🐍', 'Pythonista de redes', (S.tools.pyDone || 0) >= 4],
+      ['🎬', 'Explorador de simulaciones (10)', (S.tools.simCount || 0) >= 10],
       ['🇬🇧', 'Bilingual Engineer (60 palabras)', Object.keys(S.drill).length >= 60],
       ['🛡️', 'Defensor (Seguridad completa)', UNITS.find(u => u.id === 'u10') && unitProg(UNITS.find(u => u.id === 'u10')).done],
       ['🕵️', 'Hacker ético (U13 completa)', UNITS.find(u => u.id === 'u13') && unitProg(UNITS.find(u => u.id === 'u13')).done],
@@ -169,8 +172,10 @@
     c.innerHTML = u.lessons.map((l, i) => {
       const ok = S.read[u.id + ':' + i];
       return '<details class="lesson" ' + (i === (firstUnread < 0 ? -1 : firstUnread) ? 'open' : '') + '><summary><span class="num">' + u.num + '.' + (i + 1) + '</span> ' + l.t + '<span class="chk ' + (ok ? 'ok' : '') + '">' + (ok ? '✔ leída' : '○ pendiente') + '</span></summary><div class="lbody">' + l.h +
+        (window.SimKit ? SimKit.forLesson(u.id + ':' + i).map(id => '<div class="simslot" data-sim="' + id + '"></div>').join('') : '') +
         '<p style="margin-top:18px"><button class="btn sm" data-read="' + i + '" ' + (ok ? 'disabled' : '') + '>' + (ok ? '✔ Leída' : '✓ Marcar como leída (+10 XP)') + '</button></p></div></details>';
     }).join('') + (u.tool ? '<div class="noc">Esta unidad tiene laboratorio interactivo: <a href="#/tool/' + u.tool + '">' + TOOLS[u.tool].icon + ' ' + TOOLS[u.tool].title + '</a></div>' : '');
+    c.querySelectorAll('.simslot').forEach(el => SimKit.mount(el, el.dataset.sim));
     c.querySelectorAll('[data-read]').forEach(b => b.onclick = () => {
       const k = u.id + ':' + b.dataset.read;
       if (S.read[k]) return;
@@ -271,6 +276,25 @@
     t.render(document.getElementById('tool'));
   }
 
+  function viewSims() {
+    const all = SimKit.list();
+    let h = '<div class="hero"><div class="num">SIMULACIONES</div><h1>🎬 Simulaciones animadas</h1><p>Ver el protocolo funcionando ayuda a entenderlo de verdad. Cada simulación también aparece dentro de la lección correspondiente. Completadas: <b>' + SimKit.count() + '/' + all.length + '</b> (+15 XP cada una).</p></div>';
+    UNITS.forEach(u => {
+      const mine = all.filter(x => (x.at || []).some(k => k.split(':')[0] === u.id) && (x.at[0].split(':')[0] === u.id));
+      if (!mine.length) return;
+      h += '<h3>' + u.icon + ' ' + u.num + '. ' + u.short + '</h3><div class="grid">' + mine.map(x => '<a class="card" href="#/sim/' + x.id + '"><div class="row"><span class="ico">' + x.icon + '</span>' + (S.tools['sim:' + x.id] ? '<span class="num" style="margin-left:auto">✔ completada</span>' : '') + '</div><h3>' + x.title + '</h3><p>' + x.desc.replace(/<[^>]+>/g, '').slice(0, 130) + '…</p></a>').join('') + '</div>';
+    });
+    $m().innerHTML = h;
+  }
+  function viewSim(id) {
+    const x = window.SIMS[id];
+    if (!x) return viewSims();
+    const u = UNITS.find(v => v.id === x.at[0].split(':')[0]);
+    const li = +x.at[0].split(':')[1];
+    $m().innerHTML = '<p><a href="#/sims">← Todas las simulaciones</a>' + (u ? ' · Teoría relacionada: <a href="#/unit/' + u.id + '">' + u.num + '.' + (li + 1) + ' ' + u.lessons[li].t + '</a>' : '') + '</p><div id="simv"></div>';
+    SimKit.mount(document.getElementById('simv'), id);
+  }
+
   function viewEnglish() {
     const all = [];
     UNITS.forEach(u => u.english.forEach(e => all.push(e.concat([u.short, u.id]))));
@@ -346,6 +370,8 @@
     document.getElementById('side').classList.remove('open');
     if (a === 'unit') viewUnit(b, c || 'teoria');
     else if (a === 'tool') viewTool(b);
+    else if (a === 'sims' && window.SimKit) viewSims();
+    else if (a === 'sim' && window.SimKit) viewSim(b);
     else if (a === 'english') viewEnglish();
     else if (a === 'exam') viewExam();
     else if (a === 'plan') viewPlan();

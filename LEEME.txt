@@ -32,6 +32,20 @@ CONTENIDO
    - Simulador de turno NOC (5 incidentes con decisiones y SLA)
    - Python Lab (8 desafíos; necesita Internet la primera vez para cargar Python)
 
+  Simulaciones animadas (27): aparecen dentro de la lección de Teoría que
+  corresponde y también juntas en "🎬 Todas las simulaciones" (+15 XP c/u).
+   U01 Cómo aprende MACs un switch (y modo hub) · Encapsulación paso a paso
+   U02 Decimal ↔ binario ↔ hexa (con práctica) · Subred bit a bit
+       (número mágico) · Asignador VLSM animado
+   U03 TCP vs UDP (handshake, retransmisión, FIN, RST) · ARP · Traceroute/TTL
+       DHCP DORA (+APIPA) · DNS recursivo y caché · NAT/PAT
+   U04 VLANs y trunk 802.1Q (nativa, allowed) · Spanning Tree (+ tormenta)
+   U05 Longest prefix match · OSPF/SPF (Dijkstra) · ACL extendida (desafío)
+   U06 Canales Wi-Fi 2,4 GHz · Presupuesto de enlace de radio · OTDR/GPON
+   U07 chmod visual · U08 Caso "No tengo internet" · U09 Disponibilidad
+   U10 Diffie-Hellman · Fuerza bruta de contraseñas · U11 Regex sobre logs
+   U12 Idempotencia Ansible vs script · U13 Nmap open/closed/filtered
+
   English Lab: glosario de todas las unidades, drill de vocabulario, frases
   para incidentes/soporte/pase de turno, false friends y 10 preguntas de
   entrevista con respuestas modelo.
@@ -42,3 +56,5 @@ ESTRUCTURA DE ARCHIVOS
   index.html         -> abrir este
   assets/            -> estilos, motor de la app, laboratorios, extras
   units/             -> una unidad por archivo (fácil de ampliar o corregir)
+  assets/sims-*.js   -> simulaciones (sims-core = motor; 'at' indica en qué
+                        lección se incrusta, ej. 'u01:2' = unidad 1, lección 3)
